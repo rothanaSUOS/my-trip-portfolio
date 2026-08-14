@@ -168,5 +168,44 @@
         "height": 1500
       }
     ]
+  },
+  {
+    "id": "2020-dinner-at-celeste",
+    "title": "Dinner at  Celeste skybar",
+    "date": "2020-01-31",
+    "location": {
+      "name": "Phnom Penh",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "work",
+    "template": "mosaic",
+    "description": "Friday night got excited to go to the best sky bar in Cambodia at that time- the sky bar can rotate 360 degree that is the unique and only one in Cambodia",
+    "categories": [
+      "company"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2020-dinner-at-celeste-01.jpg",
+        "alt": "IMG20200131221646",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p2",
+        "url": "photos/2020-dinner-at-celeste-02.jpg",
+        "alt": "IMG20200131232534",
+        "width": 2000,
+        "height": 1500
+      },
+      {
+        "id": "p3",
+        "url": "photos/2020-dinner-at-celeste-03.jpg",
+        "alt": "IMG20200131225026",
+        "width": 2000,
+        "height": 1500
+      }
+    ]
   }
 ]
