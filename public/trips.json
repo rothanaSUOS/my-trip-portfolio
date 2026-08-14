@@ -18,5 +18,25 @@
         "alt": "IMG 6973"
       }
     ]
+  },
+  {
+    "id": "2007-wedding-ceremony-as",
+    "title": "Wedding ceremony as កូនទេវតា(It not a trip but a rare photo of my childhood",
+    "date": "2007-08-15",
+    "location": {
+      "name": "Kampong Cham",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "childhood",
+    "template": "panel",
+    "description": "I don't really remember of that event 😄😆",
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2007-wedding-ceremony-as-01.jpg",
+        "alt": "IMG 6972"
+      }
+    ]
   }
 ]
