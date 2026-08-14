@@ -1,0 +1,32 @@
+[
+  {
+    "id": "2026-cjaoda",
+    "title": "cjaoda",
+    "date": "2026-08-14",
+    "location": {
+      "name": "ondad",
+      "country": "dkjbnda",
+      "countryCode": "jp"
+    },
+    "chapter": "recent",
+    "template": "collage",
+    "description": "tstr",
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2026-cjaoda-01.jpg",
+        "alt": "Screenshot 2026 08 13 at 3.31.11 PM"
+      },
+      {
+        "id": "p2",
+        "url": "photos/2026-cjaoda-02.jpg",
+        "alt": "Screenshot 2026 08 13 at 5.05.14 PM"
+      },
+      {
+        "id": "p3",
+        "url": "photos/2026-cjaoda-03.jpg",
+        "alt": "Screenshot 2026 08 13 at 5.55.11 PM"
+      }
+    ]
+  }
+]
