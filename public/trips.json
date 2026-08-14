@@ -103,5 +103,41 @@
         "height": 1500
       }
     ]
+  },
+  {
+    "id": "2019-at-phnom-ta",
+    "title": "At Phnom Ta Mao",
+    "date": "2019-10-27",
+    "location": {
+      "name": "Takeo",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "university",
+    "template": "mosaic",
+    "description": "A first trip to Phnom Ta Mao national safari with friend",
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2019-at-phnom-ta-01.jpg",
+        "alt": "IMG20191027143744",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p2",
+        "url": "photos/2019-at-phnom-ta-02.jpg",
+        "alt": "IMG20191027094056",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p3",
+        "url": "photos/2019-at-phnom-ta-03.jpg",
+        "alt": "IMG20191027105043",
+        "width": 2000,
+        "height": 1500
+      }
+    ]
   }
 ]
