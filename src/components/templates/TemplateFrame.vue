@@ -64,7 +64,6 @@ export default defineComponent({
 .frame {
   display: flex;
   flex-direction: column;
-  height: 100%;
   background: rgb(var(--v-theme-deep));
   color: rgb(var(--v-theme-on-deep));
   border-radius: var(--radius-lg);
@@ -74,8 +73,11 @@ export default defineComponent({
 /* The white "device" mount the photo sits in. */
 .frame__mount {
   display: flex;
-  flex: 1 1 auto;
-  min-height: 120px;
+  /* Same 4:3 as every other template. Stretching turned landscape photos into
+     strips; a square mount fixed that but left this the tallest card, and with
+     uniform row heights that padded every other card with dead space. */
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 3;
   background: #fff;
   border-radius: var(--radius-md);
   padding: 0.55rem;
@@ -87,7 +89,10 @@ export default defineComponent({
 }
 
 .frame__body {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 1.15rem 0.4rem 0.35rem;
 }
 
@@ -113,7 +118,7 @@ export default defineComponent({
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  margin-top: 1.1rem;
+  margin-top: auto;
   padding: 0.5rem 1.1rem;
   border-radius: 999px;
   background: #fff;

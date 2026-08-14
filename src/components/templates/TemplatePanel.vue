@@ -30,7 +30,7 @@ export default defineComponent({
 <template>
   <div class="panel">
     <div v-if="view.cover" class="panel__media">
-      <TripPhoto :photo="view.cover" size="thumb" :eager="eager" fill />
+      <TripPhoto :photo="view.cover" size="thumb" :eager="eager" :aspect-ratio="4 / 3" />
       <span v-if="view.photoCount > 1" class="panel__count font-meta">
         <v-icon icon="$imageMultiple" size="13" />
         {{ view.photoCount }}
@@ -65,7 +65,6 @@ export default defineComponent({
 .panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
   background: rgb(var(--v-theme-surface));
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -74,9 +73,9 @@ export default defineComponent({
 .panel__media {
   position: relative;
   display: flex;
-  flex: 1 1 auto;
-  /* min-height lets the photo shrink below its intrinsic size in a short cell. */
-  min-height: 120px;
+  /* Fixed 4:3, not flex: 1 — letting the media absorb the card's spare height
+     stretched it to a 0.57 ratio and squeezed landscape photos into strips. */
+  flex: 0 0 auto;
   padding: 0.75rem 0.75rem 0;
 }
 
@@ -99,7 +98,12 @@ export default defineComponent({
 }
 
 .panel__body {
-  flex: 0 0 auto;
+  /* Takes the spare height instead, with the button pinned to the bottom so
+     buttons line up across cards of differing text length. */
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 1.15rem 1.35rem 1.5rem;
 }
 
@@ -141,7 +145,7 @@ export default defineComponent({
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  margin-top: 1rem;
+  margin-top: auto;
   padding: 0.5rem 1.1rem;
   border: 1px solid rgb(var(--v-theme-surface-variant));
   border-radius: 999px;

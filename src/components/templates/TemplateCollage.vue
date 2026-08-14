@@ -81,7 +81,6 @@ export default defineComponent({
 .collage {
   display: flex;
   flex-direction: column;
-  height: 100%;
   background: rgb(var(--v-theme-surface));
   border-radius: var(--radius-lg);
   padding: 0.75rem 0.75rem 0;
@@ -92,8 +91,9 @@ export default defineComponent({
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem;
-  flex: 1 1 auto;
-  min-height: 140px;
+  /* Fixed 4:3 so landscape photos are not squeezed into vertical strips. */
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 3;
 }
 
 .collage__media--single {
@@ -111,7 +111,10 @@ export default defineComponent({
 }
 
 .collage__body {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 1.25rem 0.6rem 1.5rem;
 }
 
@@ -153,7 +156,7 @@ export default defineComponent({
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  margin-top: 1rem;
+  margin-top: auto;
   padding: 0.5rem 1.1rem;
   border: 1px solid rgb(var(--v-theme-surface-variant));
   border-radius: 999px;

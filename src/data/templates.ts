@@ -39,6 +39,18 @@ export const TEMPLATES: readonly TemplateMeta[] = [
     photosUsed: 2,
   },
   {
+    id: 'mosaic',
+    label: 'Mosaic',
+    hint: 'Three photos: one tall on the left, two stacked right. Extra photos become a “+N” badge.',
+    photosUsed: 3,
+  },
+  {
+    id: 'grid',
+    label: 'Grid',
+    hint: 'Four photos in an even 2×2. Extra photos become a “+N” badge.',
+    photosUsed: 4,
+  },
+  {
     id: 'quote',
     label: 'Quote',
     hint: 'Title centred on a floating panel over the photo. For a trip with a line to remember.',

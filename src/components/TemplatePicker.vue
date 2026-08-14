@@ -76,6 +76,18 @@ export default defineComponent({
             <i class="ph ph--pair"><i class="ph ph--photo" /><i class="ph ph--photo ph--drop" /></i
             ><i class="ph ph--line" />
           </template>
+          <template v-else-if="template.id === 'mosaic'">
+            <i class="ph ph--mosaic">
+              <i class="ph ph--photo ph--tall" />
+              <i class="ph ph--stack"><i class="ph ph--photo" /><i class="ph ph--photo" /></i></i
+            ><i class="ph ph--line" />
+          </template>
+          <template v-else-if="template.id === 'grid'">
+            <i class="ph ph--quad">
+              <i class="ph ph--photo" /><i class="ph ph--photo" />
+              <i class="ph ph--photo" /><i class="ph ph--photo" /></i
+            ><i class="ph ph--line" />
+          </template>
           <template v-else>
             <i class="ph ph--fill" /><i class="ph ph--float" />
           </template>
@@ -213,6 +225,33 @@ export default defineComponent({
 
 .ph--drop {
   margin-top: 25%;
+}
+
+/* Mosaic: tall left, two stacked right. */
+.ph--mosaic {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2px;
+}
+
+.ph--tall {
+  height: 100%;
+}
+
+.ph--stack {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+}
+
+/* Grid: even 2x2. */
+.ph--quad {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
 }
 
 .ph--float {

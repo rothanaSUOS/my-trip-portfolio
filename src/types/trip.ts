@@ -16,7 +16,14 @@ export type LifeChapter = 'childhood' | 'school' | 'university' | 'work' | 'rece
  * Templates change presentation only — every trip carries the same fields, so
  * switching template never loses data.
  */
-export type TripTemplate = 'window' | 'panel' | 'frame' | 'collage' | 'quote'
+export type TripTemplate =
+  | 'window'
+  | 'panel'
+  | 'frame'
+  | 'collage'
+  | 'quote'
+  | 'mosaic'
+  | 'grid'
 
 /**
  * What kind of trip it was — who you were with, or what sort of place.

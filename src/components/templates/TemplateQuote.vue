@@ -34,7 +34,7 @@ export default defineComponent({
       :photo="view.cover"
       size="thumb"
       :eager="eager"
-      fill
+      :aspect-ratio="1"
       :rounded="false"
       class="quote__photo"
     />
@@ -60,8 +60,7 @@ export default defineComponent({
 <style scoped>
 .quote {
   position: relative;
-  height: 100%;
-  min-height: 320px;
+  /* Square, sized by the photo — masonry cells have no height to fill. */
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: rgb(var(--v-theme-surface-bright));
@@ -79,7 +78,7 @@ export default defineComponent({
 
 .quote__placeholder {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
 }
 
 .quote__scrim {

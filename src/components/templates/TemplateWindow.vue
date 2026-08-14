@@ -35,7 +35,7 @@ export default defineComponent({
       :photo="view.cover"
       size="thumb"
       :eager="eager"
-      fill
+      :aspect-ratio="4 / 5"
       :rounded="false"
       class="window__photo"
     />
@@ -64,14 +64,15 @@ export default defineComponent({
 <style scoped>
 .window {
   position: relative;
-  height: 100%;
+  /* Intrinsic height from the photo: in a masonry column there is no cell
+     height to fill, so height: 100% would collapse to nothing. */
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: rgb(var(--v-theme-surface-bright));
 }
 
 .window__placeholder {
-  height: 100%;
+  aspect-ratio: 4 / 5;
 }
 
 /* Scrim: transparent over the top two-thirds so the photo reads, deepening

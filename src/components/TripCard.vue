@@ -3,6 +3,8 @@ import { defineComponent, type PropType } from 'vue'
 
 import TemplateCollage from '@/components/templates/TemplateCollage.vue'
 import TemplateFrame from '@/components/templates/TemplateFrame.vue'
+import TemplateGrid from '@/components/templates/TemplateGrid.vue'
+import TemplateMosaic from '@/components/templates/TemplateMosaic.vue'
 import TemplatePanel from '@/components/templates/TemplatePanel.vue'
 import TemplateQuote from '@/components/templates/TemplateQuote.vue'
 import TemplateWindow from '@/components/templates/TemplateWindow.vue'
@@ -16,6 +18,8 @@ const TEMPLATE_COMPONENTS: Record<TripTemplate, string> = {
   frame: 'TemplateFrame',
   collage: 'TemplateCollage',
   quote: 'TemplateQuote',
+  mosaic: 'TemplateMosaic',
+  grid: 'TemplateGrid',
 }
 
 /**
@@ -33,6 +37,8 @@ export default defineComponent({
   components: {
     TemplateCollage,
     TemplateFrame,
+    TemplateGrid,
+    TemplateMosaic,
     TemplatePanel,
     TemplateQuote,
     TemplateWindow,
@@ -109,11 +115,9 @@ export default defineComponent({
 <style scoped>
 .trip-card {
   position: relative;
-  height: 100%;
 }
 
 .trip-card__surface {
-  height: 100%;
   cursor: pointer;
   border-radius: var(--radius-lg);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease;

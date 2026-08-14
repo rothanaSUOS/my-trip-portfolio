@@ -7,10 +7,17 @@ import type { Trip } from '@/types/trip'
 /**
  * The trip listing: a dense, responsive grid of poster cards, newest first.
  *
- * Every tile is the same size. `grid-auto-rows: 1fr` gives all rows one track
- * height and the cards stretch to fill it; each template then absorbs the slack
- * in its photo area. Letting cards keep their natural heights instead produced a
- * ragged waterfall, which is not the look.
+ * Pinterest-style masonry via CSS multi-column: cards keep their natural height
+ * and pack tightly, with no dead space padding a short card out to match a tall
+ * one. Column count steps with the breakpoints.
+ *
+ * Columns rather than CSS grid because grid cannot do true masonry — a card can
+ * never rise into the gap left by a shorter neighbour above, so gaps remain.
+ * `grid-template-rows: masonry` would solve it but is not shipping broadly yet.
+ *
+ * The tradeoff is reading order: columns fill top-to-bottom, so the newest trips
+ * fill the left column before the middle one, newspaper-style, rather than
+ * running left-to-right. For a date-sorted list that stays coherent.
  *
  * There are deliberately no year dividers. Most years hold a single trip, and a
  * full-width heading per trip stretched the grid into one tall column — the
@@ -131,24 +138,19 @@ export default defineComponent({
 
 <style scoped>
 .grid {
-  display: grid;
   /* Mobile-first: a single column. */
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-  /* Every tile the same height: rows share one track size and cards stretch to
-     fill it. Templates absorb the slack in their photo area, so the grid reads
-     as an even set of posters rather than a ragged waterfall. */
-  grid-auto-rows: 1fr;
-  align-items: stretch;
+  columns: 1;
+  column-gap: 1.25rem;
   padding-block: 1.5rem 4rem;
 }
 
 /* ── Cells ──────────────────────────────────────────────────────────────── */
 
 .grid__cell {
-  min-width: 0;
-  /* Cells stretch, so the card inside can be height: 100%. */
-  display: flex;
+  /* Keeps a card from being split across a column boundary. */
+  break-inside: avoid;
+  /* Column layout has no row-gap, so the spacing lives on the cell. */
+  margin-bottom: 1.25rem;
   opacity: 0;
   transform: translateY(22px);
   transition:
@@ -161,13 +163,9 @@ export default defineComponent({
   transform: none;
 }
 
-.grid__cell > * {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
 .grid__empty {
-  grid-column: 1 / -1;
+  /* Spans the whole area rather than sitting in one column. */
+  column-span: all;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -180,14 +178,18 @@ export default defineComponent({
 
 @media (min-width: 600px) {
   .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
+    columns: 2;
+    column-gap: 1.5rem;
+  }
+
+  .grid__cell {
+    margin-bottom: 1.5rem;
   }
 }
 
 @media (min-width: 960px) {
   .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    columns: 3;
   }
 }
 </style>
