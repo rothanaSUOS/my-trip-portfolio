@@ -2,6 +2,7 @@
 import { defineComponent, type PropType } from 'vue'
 
 import TripPhoto from '@/components/TripPhoto.vue'
+import { categoriesOf } from '@/data/categories'
 import { chapterMeta } from '@/data/chapters'
 import { resolvePhotoUrl } from '@/services/photos'
 import { formatTripRange, tripDuration } from '@/utils/date'
@@ -51,6 +52,11 @@ export default defineComponent({
     /** Editor line wraps collapsed; blank lines kept as paragraph breaks. */
     story(): string {
       return this.trip ? formatStory(this.trip.description) : ''
+    },
+
+    /** Category chips shown under the story. */
+    categories() {
+      return categoriesOf(this.trip?.categories)
     },
 
     hero() {
@@ -171,9 +177,15 @@ export default defineComponent({
           </div>
         </template>
 
-        <div v-if="trip.tags?.length" class="detail__tags">
-          <v-chip v-for="tag in trip.tags" :key="tag" size="small" variant="outlined">
-            {{ tag }}
+        <div v-if="categories.length" class="detail__tags">
+          <v-chip
+            v-for="category in categories"
+            :key="category.id"
+            :prepend-icon="category.icon"
+            size="small"
+            variant="outlined"
+          >
+            {{ category.label }}
           </v-chip>
         </div>
       </v-card-text>

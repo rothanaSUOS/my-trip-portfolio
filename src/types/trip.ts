@@ -18,6 +18,19 @@ export type LifeChapter = 'childhood' | 'school' | 'university' | 'work' | 'rece
  */
 export type TripTemplate = 'window' | 'panel' | 'frame' | 'collage' | 'quote'
 
+/**
+ * What kind of trip it was — who you were with, or what sort of place.
+ * A trip can have several. See `src/data/categories.ts` for labels and icons.
+ */
+export type TripCategory =
+  | 'family'
+  | 'couple'
+  | 'friends'
+  | 'company'
+  | 'solo'
+  | 'hiking'
+  | 'sea'
+
 /** A single photo attached to a trip. */
 export interface Photo {
   /** Stable id, unique within its trip. Used as the `:key` in photo grids. */
@@ -64,8 +77,8 @@ export interface Trip {
   chapter: LifeChapter
   /** Short bullets shown as chips on the detail dialog. */
   highlights?: string[]
-  /** Free-form tags for filtering, e.g. `['family', 'beach']`. */
-  tags?: string[]
+  /** What kind of trip it was, e.g. `['family', 'sea']`. Any number, or none. */
+  categories?: TripCategory[]
   photos: Photo[]
   /** Card layout. Defaults to `panel` when omitted. */
   template?: TripTemplate

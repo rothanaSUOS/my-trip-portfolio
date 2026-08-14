@@ -3,6 +3,7 @@ import { defineComponent, type PropType } from 'vue'
 
 import TemplatePicker from '@/components/TemplatePicker.vue'
 import TripPhoto from '@/components/TripPhoto.vue'
+import { CATEGORIES } from '@/data/categories'
 import { CHAPTERS } from '@/data/chapters'
 import { DEFAULT_TEMPLATE } from '@/data/templates'
 import { formatBytes, photoPath, prepareImage, ImageError } from '@/services/images'
@@ -15,7 +16,7 @@ import {
   withPrecision,
   type DatePrecision,
 } from '@/utils/date'
-import type { LifeChapter, Photo, Trip, TripTemplate } from '@/types/trip'
+import type { LifeChapter, Photo, Trip, TripCategory, TripTemplate } from '@/types/trip'
 
 /** A photo row that still holds bytes waiting to be committed. */
 interface PendingUpload {
@@ -38,7 +39,7 @@ interface TripDraft {
   template: TripTemplate
   description: string
   highlights: string[]
-  tags: string[]
+  categories: TripCategory[]
   photos: Photo[]
 }
 
@@ -58,7 +59,7 @@ function emptyDraft(): TripDraft {
     template: DEFAULT_TEMPLATE,
     description: '',
     highlights: [],
-    tags: [],
+    categories: [],
     photos: [],
   }
 }
@@ -102,6 +103,7 @@ export default defineComponent({
     return {
       draft: emptyDraft(),
       chapters: CHAPTERS,
+      allCategories: CATEGORIES,
       /**
        * How precisely this trip's dates are known. The picker always returns a
        * full `Date`; this decides how much of it is kept, so a childhood trip
@@ -258,6 +260,22 @@ export default defineComponent({
         if (open) this.reset()
       },
     },
+
+    /**
+     * Also reset when the trip itself arrives.
+     *
+     * On the first open of a page load, `modelValue` flips to true before the
+     * `trip` prop has been patched, so the handler above ran against a null trip
+     * and left an empty form under an "Edit trip" heading. Every later open
+     * worked, because `trip` was already populated from the previous one.
+     *
+     * Compared by id, not identity: the parent replaces its trip objects on
+     * every background refresh, and re-running reset() then would wipe whatever
+     * the user had typed.
+     */
+    trip(next: Trip | null, previous: Trip | null) {
+      if (this.modelValue && next?.id !== previous?.id) this.reset()
+    },
   },
 
   methods: {
@@ -300,7 +318,7 @@ export default defineComponent({
         template: trip.template ?? DEFAULT_TEMPLATE,
         description: trip.description,
         highlights: [...(trip.highlights ?? [])],
-        tags: [...(trip.tags ?? [])],
+        categories: [...(trip.categories ?? [])],
         // Deep copy so editing photos does not mutate the stored trip.
         photos: trip.photos.map((photo) => ({ ...photo })),
       }
@@ -313,6 +331,17 @@ export default defineComponent({
         if (upload) URL.revokeObjectURL(upload.previewUrl)
       }
       this.uploads = []
+    },
+
+    isCategoryOn(id: TripCategory): boolean {
+      return this.draft.categories.includes(id)
+    },
+
+    /** Categories are a multi-select: a trip can be family *and* sea. */
+    toggleCategory(id: TripCategory) {
+      const index = this.draft.categories.indexOf(id)
+      if (index === -1) this.draft.categories.push(id)
+      else this.draft.categories.splice(index, 1)
     },
 
     error(field: string): string | undefined {
@@ -424,7 +453,7 @@ export default defineComponent({
         template: draft.template,
         description: draft.description.trim(),
         ...(draft.highlights.length ? { highlights: [...draft.highlights] } : {}),
-        ...(draft.tags.length ? { tags: [...draft.tags] } : {}),
+        ...(draft.categories.length ? { categories: [...draft.categories] } : {}),
         photos: [],
       }
 
@@ -565,25 +594,33 @@ export default defineComponent({
           :error-messages="error('description')"
         />
 
-        <div class="editor__row">
-          <v-combobox
-            v-model="draft.highlights"
-            label="Highlights"
-            multiple
-            chips
-            closable-chips
-            hint="Press Enter after each"
-            persistent-hint
-          />
-          <v-combobox
-            v-model="draft.tags"
-            label="Tags"
-            multiple
-            chips
-            closable-chips
-            hint="Press Enter after each"
-            persistent-hint
-          />
+        <v-combobox
+          v-model="draft.highlights"
+          label="Highlights"
+          multiple
+          chips
+          closable-chips
+          hint="Press Enter after each"
+          persistent-hint
+        />
+
+        <div class="editor__categories">
+          <p class="editor__field-label">What kind of trip was it?</p>
+          <div class="editor__chips">
+            <v-chip
+              v-for="category in allCategories"
+              :key="category.id"
+              :prepend-icon="category.icon"
+              :variant="isCategoryOn(category.id) ? 'flat' : 'outlined'"
+              :color="isCategoryOn(category.id) ? 'primary' : undefined"
+              :aria-pressed="isCategoryOn(category.id)"
+              role="button"
+              @click="toggleCategory(category.id)"
+            >
+              {{ category.label }}
+            </v-chip>
+          </div>
+          <p class="editor__hint">Pick as many as fit — or none.</p>
         </div>
 
         <!-- ── Template ─────────────────────────────────────────────── -->
@@ -816,6 +853,24 @@ export default defineComponent({
 .editor__precision :deep(.v-btn) {
   font-size: 0.78rem;
   letter-spacing: 0;
+}
+
+.editor__field-label {
+  font-size: 0.8rem;
+  color: rgb(var(--v-theme-on-surface-variant));
+  margin-bottom: 0.6rem;
+}
+
+.editor__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.editor__hint {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: rgb(var(--v-theme-on-surface-variant));
 }
 
 .editor__add-photo {

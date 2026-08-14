@@ -17,8 +17,9 @@ import {
 import { makePreviewDataUrl } from '@/services/images'
 import { setPreview } from '@/services/photoPreviews'
 import { isConfigured } from '@/services/settings'
+import { categoriesOf } from '@/data/categories'
 import { byDateDescending, yearOf } from '@/utils/date'
-import type { LifeChapter, Trip, TripStats } from '@/types/trip'
+import type { LifeChapter, Trip, TripCategory, TripStats } from '@/types/trip'
 
 /**
  * Root component. Owns all page state — the trip list, filters, which trip is
@@ -62,6 +63,7 @@ export default defineComponent({
 
       search: '',
       selectedChapters: [] as LifeChapter[],
+      selectedCategories: [] as TripCategory[],
       selectedCountry: null as string | null,
 
       openTrip: null as Trip | null,
@@ -91,6 +93,15 @@ export default defineComponent({
 
       return this.sortedTrips.filter((trip) => {
         if (this.selectedChapters.length && !this.selectedChapters.includes(trip.chapter)) {
+          return false
+        }
+
+        // Every selected category must be present, so picking Family + Sea
+        // narrows to family trips at the sea rather than widening to either.
+        if (
+          this.selectedCategories.length &&
+          !this.selectedCategories.every((id) => trip.categories?.includes(id))
+        ) {
           return false
         }
 
@@ -202,7 +213,7 @@ export default defineComponent({
         trip.description,
         trip.location.name,
         trip.location.country,
-        ...(trip.tags ?? []),
+        ...categoriesOf(trip.categories).map((c) => c.label),
         ...(trip.highlights ?? []),
       ]
         .join(' ')
@@ -212,6 +223,7 @@ export default defineComponent({
     resetFilters() {
       this.search = ''
       this.selectedChapters = []
+      this.selectedCategories = []
       this.selectedCountry = null
     },
 
@@ -418,6 +430,7 @@ export default defineComponent({
         <TripFilters
           v-model:search="search"
           v-model:chapters="selectedChapters"
+          v-model:categories="selectedCategories"
           v-model:country="selectedCountry"
           :countries="countries"
           :result-count="filteredTrips.length"

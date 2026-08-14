@@ -1,4 +1,6 @@
 import {
+  mdiAccount,
+  mdiAccountMultiple,
   mdiAlertCircleOutline,
   mdiArrowUp,
   mdiBagPersonalOutline,
@@ -6,11 +8,16 @@ import {
   mdiCheck,
   mdiCircleSmall,
   mdiCompassOutline,
+  mdiBeach,
+  mdiBriefcaseOutline,
   mdiEarth,
   mdiEye,
   mdiEyeOff,
   mdiImageMultipleOutline,
   mdiImageOffOutline,
+  mdiHeartOutline,
+  mdiHiking,
+  mdiHumanMaleFemaleChild,
   mdiMagnify,
   mdiMapMarkerOutline,
   mdiMapSearchOutline,
@@ -28,7 +35,7 @@ import { aliases as vuetifyAliases, mdi } from 'vuetify/iconsets/mdi-svg'
  * Icons as tree-shaken SVG paths rather than the `@mdi/font` webfont.
  *
  * The font ships ~400KB of woff2 and ~350KB of CSS covering 7,000+ icons; this
- * site uses about twenty-two. Importing paths from `@mdi/js` means only those end up
+ * site uses about thirty. Importing paths from `@mdi/js` means only those end up
  * in the bundle, which matters on the phone connections most visitors will be on.
  *
  * COST: icon names must be registered here as aliases and referenced in
@@ -59,6 +66,15 @@ export const iconAliases = {
   settings: mdiCogOutline,
   upload: mdiUpload,
   trash: mdiTrashCanOutline,
+
+  // Trip categories — referenced by `icon` in src/data/categories.ts.
+  catFamily: mdiHumanMaleFemaleChild,
+  catCouple: mdiHeartOutline,
+  catFriends: mdiAccountMultiple,
+  catCompany: mdiBriefcaseOutline,
+  catSolo: mdiAccount,
+  catHiking: mdiHiking,
+  catSea: mdiBeach,
 
   // Life chapters — referenced by `icon` in src/data/chapters.ts.
   chapterChildhood: mdiTeddyBear,

@@ -1,8 +1,9 @@
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue'
 
+import { CATEGORIES } from '@/data/categories'
 import { CHAPTERS } from '@/data/chapters'
-import type { LifeChapter } from '@/types/trip'
+import type { LifeChapter, TripCategory } from '@/types/trip'
 
 /**
  * Search box, chapter chips and country select.
@@ -18,6 +19,8 @@ export default defineComponent({
     search: { type: String, default: '' },
     /** Empty array means "all chapters". */
     chapters: { type: Array as PropType<LifeChapter[]>, default: () => [] },
+    /** Empty array means "all kinds of trip". */
+    categories: { type: Array as PropType<TripCategory[]>, default: () => [] },
     /** `null` means "all countries". */
     country: { type: String as PropType<string | null>, default: null },
     /** Country names present in the data, for the select. */
@@ -30,6 +33,7 @@ export default defineComponent({
   emits: {
     'update:search': (value: string) => typeof value === 'string',
     'update:chapters': (value: LifeChapter[]) => Array.isArray(value),
+    'update:categories': (value: TripCategory[]) => Array.isArray(value),
     'update:country': (value: string | null) => value === null || typeof value === 'string',
     reset: () => true,
   },
@@ -37,12 +41,18 @@ export default defineComponent({
   data() {
     return {
       allChapters: CHAPTERS,
+      allCategories: CATEGORIES,
     }
   },
 
   computed: {
     isFiltered(): boolean {
-      return Boolean(this.search) || this.chapters.length > 0 || this.country !== null
+      return (
+        Boolean(this.search) ||
+        this.chapters.length > 0 ||
+        this.categories.length > 0 ||
+        this.country !== null
+      )
     },
 
     countLabel(): string {
@@ -56,6 +66,17 @@ export default defineComponent({
   methods: {
     isActive(id: LifeChapter): boolean {
       return this.chapters.includes(id)
+    },
+
+    isCategoryActive(id: TripCategory): boolean {
+      return this.categories.includes(id)
+    },
+
+    toggleCategory(id: TripCategory) {
+      const next = this.isCategoryActive(id)
+        ? this.categories.filter((category) => category !== id)
+        : [...this.categories, id]
+      this.$emit('update:categories', next)
     },
 
     /** Chapter chips are a multi-select toggle, not radio buttons. */
@@ -78,7 +99,7 @@ export default defineComponent({
         variant="outlined"
         hide-details
         clearable
-        placeholder="Search trips, places, tags…"
+        placeholder="Search trips, places, categories…"
         prepend-inner-icon="$magnify"
         class="filters__search"
         @update:model-value="$emit('update:search', $event ?? '')"
@@ -96,6 +117,21 @@ export default defineComponent({
         class="filters__country"
         @update:model-value="$emit('update:country', $event ?? null)"
       />
+    </div>
+
+    <div class="filters__row filters__row--chips">
+      <v-chip
+        v-for="category in allCategories"
+        :key="category.id"
+        :prepend-icon="category.icon"
+        :variant="isCategoryActive(category.id) ? 'flat' : 'outlined'"
+        :color="isCategoryActive(category.id) ? 'primary' : undefined"
+        :aria-pressed="isCategoryActive(category.id)"
+        role="button"
+        @click="toggleCategory(category.id)"
+      >
+        {{ category.label }}
+      </v-chip>
     </div>
 
     <div class="filters__row filters__row--chips">
