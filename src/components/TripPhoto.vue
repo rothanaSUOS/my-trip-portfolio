@@ -3,6 +3,7 @@ import { defineComponent, type PropType } from 'vue'
 
 import {
   isGooglePhotosAlbumLink,
+  isSessionBoundPhotoUrl,
   rawPhotoUrl,
   resolvePhotoSrcset,
   resolvePhotoUrl,
@@ -81,6 +82,12 @@ export default defineComponent({
     hint(): string {
       if (this.isAlbumLink) return 'Album link — needs a direct image URL'
       if (!this.photo.url.trim()) return 'No image URL set'
+
+      // Loads for whoever copied it, 404s for everyone else — so say that,
+      // rather than a generic failure the owner cannot reproduce.
+      if (isSessionBoundPhotoUrl(this.photo.url)) {
+        return 'Link tied to a Google account — upload the file instead'
+      }
 
       // Both the served copy and the repo copy failed. For a repo path that
       // usually means the repo is private, or the branch name is wrong.

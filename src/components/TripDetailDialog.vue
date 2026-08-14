@@ -3,6 +3,7 @@ import { defineComponent, type PropType } from 'vue'
 
 import TripPhoto from '@/components/TripPhoto.vue'
 import { chapterMeta } from '@/data/chapters'
+import { resolvePhotoUrl } from '@/services/photos'
 import { formatTripRange, tripDuration } from '@/utils/date'
 import { formatStory } from '@/utils/text'
 import type { Trip } from '@/types/trip'
@@ -56,6 +57,18 @@ export default defineComponent({
       return this.trip?.photos[0]
     },
 
+    /**
+     * The hero image again, for the blurred backdrop behind it.
+     *
+     * The hero shows the whole photo rather than a crop, so a photo that is not
+     * the hero box's shape leaves empty bars. Filling them with a blown-up,
+     * blurred copy of the same photo reads as intentional, where flat grey
+     * letterboxing looks broken.
+     */
+    heroBackdrop(): string {
+      return this.hero ? resolvePhotoUrl(this.hero.url, 'thumb') : ''
+    },
+
     /** Photos after the hero — the grid below the story. */
     restPhotos() {
       return this.trip?.photos.slice(1) ?? []
@@ -79,11 +92,18 @@ export default defineComponent({
   >
     <v-card v-if="trip" class="detail" rounded="0">
       <div class="detail__hero">
+        <div
+          v-if="heroBackdrop"
+          class="detail__hero-backdrop"
+          :style="{ backgroundImage: `url(${heroBackdrop})` }"
+          aria-hidden="true"
+        />
+
         <TripPhoto
           v-if="hero"
           :photo="hero"
           size="grid"
-          :aspect-ratio="16 / 9"
+          :aspect-ratio="0"
           :rounded="false"
           eager
           class="detail__hero-photo"
@@ -168,10 +188,44 @@ export default defineComponent({
 
 .detail__hero {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* Caps a tall photo so the story below stays on screen without scrolling. */
+  max-height: 58vh;
+  background: rgb(var(--v-theme-surface-bright));
+}
+
+/* Blurred, over-scaled copy of the photo filling whatever the contained image
+   does not. scale(1.1) hides the soft edges blur leaves at the boundary. */
+.detail__hero-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(28px) saturate(1.1);
+  transform: scale(1.1);
+  opacity: 0.55;
 }
 
 .detail__hero-photo {
+  position: relative;
   cursor: zoom-in;
+  max-height: 58vh;
+  /* Shrink-to-fit so the backdrop shows beside a portrait photo rather than
+     the photo stretching across it. */
+  width: auto;
+  max-width: 100%;
+}
+
+/* contain, not cover: the point of the detail view is the whole photograph.
+   A fixed 16:9 crop cut roughly a third off a 1.15-ratio phone photo. */
+.detail__hero-photo :deep(.trip-photo__img) {
+  width: auto;
+  max-width: 100%;
+  max-height: 58vh;
+  object-fit: contain;
 }
 
 .detail__hero-tools {
@@ -263,6 +317,13 @@ export default defineComponent({
 }
 
 @media (max-width: 599px) {
+  /* Less vertical room on a phone, and the title needs to stay above the fold. */
+  .detail__hero,
+  .detail__hero-photo,
+  .detail__hero-photo :deep(.trip-photo__img) {
+    max-height: 42vh;
+  }
+
   .detail__body {
     padding: 1.25rem 1.1rem 2.5rem;
   }
