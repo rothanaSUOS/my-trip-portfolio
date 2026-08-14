@@ -1,10 +1,32 @@
+# ── Build output and dependencies ──────────────────────────────────────────
 node_modules/
 dist/
 dist-ssr/
 *.local
 
-# Editor / OS
+# NOTE: package-lock.json is deliberately NOT ignored. It is the biggest file
+# here, but the Pages workflow runs `npm ci`, which fails without it — ignoring
+# it breaks deploys. It is also what pins exact dependency versions, so builds
+# stay reproducible.
+
+# ── Caches ─────────────────────────────────────────────────────────────────
+.vite/
+*.tsbuildinfo
+.eslintcache
+coverage/
+.nyc_output/
+
+# ── Test / tooling artifacts ───────────────────────────────────────────────
+.playwright-mcp/
+playwright-report/
+test-results/
+
+# ── Editor and OS ──────────────────────────────────────────────────────────
 .DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+desktop.ini
 .vscode/*
 !.vscode/extensions.json
 .idea/
@@ -13,16 +35,31 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
+*~
 
-# Logs
+# ── Local-only config ──────────────────────────────────────────────────────
+# Machine-specific Claude settings; the shared skill in .claude/skills is committed.
+.claude/settings.local.json
+
+# ── Secrets ────────────────────────────────────────────────────────────────
+# This repository is public. Nothing below should ever reach it — the GitHub
+# token the editor uses lives in browser localStorage, never in a file, but
+# these patterns guard against a stray key being dropped into the folder.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.keystore
+id_rsa*
+id_ed25519*
+*.jks
+
+# ── Logs ───────────────────────────────────────────────────────────────────
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
-# Env
-.env
-.env.*
-!.env.example
