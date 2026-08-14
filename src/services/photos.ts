@@ -17,8 +17,11 @@
 import { getPreview } from '@/services/photoPreviews'
 import { guessRepoFromLocation, loadConfig } from '@/services/settings'
 
-/** Google's image CDN, which serves Google Photos content. */
-const GOOGLE_PHOTO_HOST = 'googleusercontent.com'
+/**
+ * Hosts Google serves photo content from. Both appear in URLs copied out of
+ * Google Photos depending on where you copy from.
+ */
+const GOOGLE_PHOTO_HOSTS = ['googleusercontent.com', 'usercontent.google.com']
 
 /**
  * Google Photos links carry an optional size suffix after `=`, e.g.
@@ -40,7 +43,19 @@ export type PhotoSize = keyof typeof PHOTO_SIZES
 
 /** True if the URL is served by Google's image CDN and supports size suffixes. */
 export function isGooglePhotoUrl(url: string): boolean {
-  return url.includes(GOOGLE_PHOTO_HOST)
+  return GOOGLE_PHOTO_HOSTS.some((host) => url.includes(host))
+}
+
+/**
+ * True for a Google Photos URL carrying `authuser`, which ties it to a specific
+ * signed-in Google account.
+ *
+ * These load perfectly for the person who copied them and fail for everyone
+ * else, so they look fine while you build the page and are broken for every
+ * visitor — the worst kind of bug to ship. Worth refusing up front.
+ */
+export function isSessionBoundPhotoUrl(url: string): boolean {
+  return /[?&]authuser=/.test(url)
 }
 
 /**

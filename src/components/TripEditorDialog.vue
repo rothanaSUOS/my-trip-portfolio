@@ -6,7 +6,7 @@ import TripPhoto from '@/components/TripPhoto.vue'
 import { CHAPTERS } from '@/data/chapters'
 import { DEFAULT_TEMPLATE } from '@/data/templates'
 import { formatBytes, photoPath, prepareImage, ImageError } from '@/services/images'
-import { isGooglePhotosAlbumLink } from '@/services/photos'
+import { isGooglePhotosAlbumLink, isSessionBoundPhotoUrl } from '@/services/photos'
 import { isIdTaken } from '@/services/tripStore'
 import {
   fromDateObject,
@@ -237,6 +237,9 @@ export default defineComponent({
         } else if (isGooglePhotosAlbumLink(photo.url)) {
           warnings[index] =
             'That is an album link, not an image. Right-click the photo on Google Photos → Copy image address.'
+        } else if (isSessionBoundPhotoUrl(photo.url)) {
+          warnings[index] =
+            'This link is tied to your Google account (authuser=), so it loads for you and fails for everyone else. Upload the file instead.'
         } else if (!photo.alt.trim()) {
           warnings[index] = 'Add alt text — screen readers and broken images both use it.'
         }
