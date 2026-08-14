@@ -45,6 +45,41 @@ export function tripView(trip: Trip): TripView {
   }
 }
 
+/**
+ * True when a trip's first two photos are both landscape.
+ *
+ * The collage template stacks such a pair rather than splitting it side by
+ * side, and the grid needs the same answer to predict a card's height — so the
+ * rule lives here rather than being written twice and drifting apart.
+ */
+export function isStackedPair(trip: Trip): boolean {
+  const pair = trip.photos.slice(0, 2)
+  if (pair.length < 2) return false
+
+  return pair.every((photo) => {
+    const { width, height } = photo
+    return Boolean(width && height) && width! / height! > 1.2
+  })
+}
+
+/**
+ * The width/height ratio a card's media area will end up with.
+ *
+ * Used by the masonry layout to estimate card heights *before* rendering, so
+ * cards can be dealt into columns without measuring the DOM first. Falls back to
+ * 4:3 whenever the photo's own dimensions are unknown.
+ */
+export function cardMediaRatio(trip: Trip): number {
+  const template = trip.template ?? 'panel'
+
+  // Multi-photo layouts use a fixed box regardless of the photos inside it.
+  if (template === 'collage') return isStackedPair(trip) ? 2 / 3 : 4 / 3
+  if (template === 'mosaic' || template === 'grid') return 4 / 3
+
+  const cover = trip.photos[0]
+  return cover?.width && cover.height ? cover.width / cover.height : 4 / 3
+}
+
 /** Turn an ISO 3166-1 alpha-2 code into its flag emoji. */
 export function countryFlag(code?: string): string {
   if (!code || code.length !== 2) return ''

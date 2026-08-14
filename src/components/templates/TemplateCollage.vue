@@ -2,7 +2,7 @@
 import { defineComponent, type PropType } from 'vue'
 
 import TripPhoto from '@/components/TripPhoto.vue'
-import { tripView } from '@/utils/tripView'
+import { isStackedPair, tripView } from '@/utils/tripView'
 import type { Trip } from '@/types/trip'
 
 /**
@@ -43,11 +43,7 @@ export default defineComponent({
      * until the image loads, so it falls back to side by side.
      */
     stacked(): boolean {
-      if (!this.hasPair) return false
-
-      return this.trip.photos
-        .slice(0, 2)
-        .every((photo) => Boolean(photo.width && photo.height) && photo.width! / photo.height! > 1.2)
+      return isStackedPair(this.trip)
     },
   },
 })

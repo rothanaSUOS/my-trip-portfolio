@@ -2,22 +2,34 @@
 import { defineComponent, type PropType } from 'vue'
 
 import TripCard from '@/components/TripCard.vue'
+import { cardMediaRatio } from '@/utils/tripView'
 import type { Trip } from '@/types/trip'
+
+/** Breakpoint → column count. Matches the CSS elsewhere in the app. */
+function columnsFor(width: number): number {
+  if (width >= 960) return 3
+  return width >= 600 ? 2 : 1
+}
 
 /**
  * The trip listing: a dense, responsive grid of poster cards, newest first.
  *
- * Pinterest-style masonry via CSS multi-column: cards keep their natural height
- * and pack tightly, with no dead space padding a short card out to match a tall
- * one. Column count steps with the breakpoints.
+ * Pinterest-style masonry: cards keep their natural height and pack tightly,
+ * with no dead space padding a short card out to match a tall one.
  *
- * Columns rather than CSS grid because grid cannot do true masonry — a card can
- * never rise into the gap left by a shorter neighbour above, so gaps remain.
- * `grid-template-rows: masonry` would solve it but is not shipping broadly yet.
+ * Trips are dealt into columns in date order, each going to whichever column is
+ * currently shortest. That keeps reading order left-to-right along each row —
+ * newest first — which is the point of a chronological list.
  *
- * The tradeoff is reading order: columns fill top-to-bottom, so the newest trips
- * fill the left column before the middle one, newspaper-style, rather than
- * running left-to-right. For a date-sorted list that stays coherent.
+ * CSS multi-column would be less code but fills each column top-to-bottom
+ * before starting the next, so nine trips would read 1,4,7 across the top row.
+ * CSS grid cannot do real masonry either: a card can never rise into the gap
+ * left by a shorter neighbour. `grid-template-rows: masonry` will solve this
+ * one day but is not shipping broadly yet.
+ *
+ * Heights are *estimated* from each photo's recorded aspect ratio rather than
+ * measured, so the columns are decided before anything renders — no reflow, and
+ * no flash of a wrong layout.
  *
  * There are deliberately no year dividers. Most years hold a single trip, and a
  * full-width heading per trip stretched the grid into one tall column — the
@@ -47,7 +59,40 @@ export default defineComponent({
       /** Ids of cards that have scrolled into view, for the fade-in. */
       revealed: new Set<string>(),
       observer: null as IntersectionObserver | null,
+      columnCount: 1,
     }
+  },
+
+  computed: {
+    /**
+     * Trips dealt into columns, in order, each to the shortest column so far.
+     *
+     * The classic greedy masonry fill. Order is preserved because trips are
+     * placed in sequence, so the first card is always top-left.
+     */
+    columns(): Trip[][] {
+      const buckets = Array.from({ length: this.columnCount }, () => ({
+        height: 0,
+        trips: [] as Trip[],
+      }))
+
+      for (const trip of this.trips) {
+        let shortest = buckets[0]!
+        for (const bucket of buckets) {
+          if (bucket.height < shortest.height) shortest = bucket
+        }
+
+        shortest.trips.push(trip)
+        shortest.height += this.estimateHeight(trip)
+      }
+
+      return buckets.map((bucket) => bucket.trips)
+    },
+
+    /** trip id → its position overall, for the stagger and eager-loading. */
+    orderById(): Map<string, number> {
+      return new Map(this.trips.map((trip, index) => [trip.id, index]))
+    },
   },
 
   watch: {
@@ -58,6 +103,9 @@ export default defineComponent({
   },
 
   mounted() {
+    this.updateColumnCount()
+    window.addEventListener('resize', this.updateColumnCount, { passive: true })
+
     // Without IntersectionObserver support, reveal everything immediately.
     if (!('IntersectionObserver' in window)) {
       this.revealed = new Set(this.trips.map((trip) => trip.id))
@@ -82,6 +130,7 @@ export default defineComponent({
   },
 
   beforeUnmount() {
+    window.removeEventListener('resize', this.updateColumnCount)
     this.observer?.disconnect()
     this.observer = null
   },
@@ -89,6 +138,29 @@ export default defineComponent({
   methods: {
     isRevealed(trip: Trip): boolean {
       return this.revealed.has(trip.id)
+    },
+
+    updateColumnCount() {
+      const next = columnsFor(window.innerWidth)
+      if (next === this.columnCount) return
+
+      this.columnCount = next
+      // Different column split means different cards; re-observe after patching.
+      this.$nextTick(() => this.observeCards())
+    },
+
+    /**
+     * Roughly how tall a card will be, in multiples of the column width.
+     *
+     * Only used to compare columns against each other, so it needs to be
+     * proportionate rather than exact — the media area dominates, and the body
+     * is near-constant apart from how many lines the title wraps to.
+     */
+    estimateHeight(trip: Trip): number {
+      const media = 1 / cardMediaRatio(trip)
+      const titleLines = Math.max(1, Math.ceil(trip.title.length / 24))
+
+      return media + 0.4 + titleLines * 0.1
     },
 
     /**
@@ -111,22 +183,24 @@ export default defineComponent({
 
 <template>
   <div class="grid">
-    <div
-      v-for="(trip, index) in trips"
-      :key="trip.id"
-      :data-trip-id="trip.id"
-      class="grid__cell"
-      :class="{ 'is-revealed': isRevealed(trip) }"
-      :style="{ '--reveal-delay': `${(index % 3) * 70}ms` }"
-    >
-      <TripCard
-        :trip="trip"
-        :eager="index < 3"
-        :editable="editable"
-        @open="$emit('open', $event)"
-        @edit="$emit('edit', $event)"
-        @remove="$emit('remove', $event)"
-      />
+    <div v-for="(column, columnIndex) in columns" :key="columnIndex" class="grid__column">
+      <div
+        v-for="trip in column"
+        :key="trip.id"
+        :data-trip-id="trip.id"
+        class="grid__cell"
+        :class="{ 'is-revealed': isRevealed(trip) }"
+        :style="{ '--reveal-delay': `${((orderById.get(trip.id) ?? 0) % 3) * 70}ms` }"
+      >
+        <TripCard
+          :trip="trip"
+          :eager="(orderById.get(trip.id) ?? 0) < 3"
+          :editable="editable"
+          @open="$emit('open', $event)"
+          @edit="$emit('edit', $event)"
+          @remove="$emit('remove', $event)"
+        />
+      </div>
     </div>
 
     <p v-if="!trips.length" class="grid__empty font-meta">
@@ -138,19 +212,24 @@ export default defineComponent({
 
 <style scoped>
 .grid {
-  /* Mobile-first: a single column. */
-  columns: 1;
-  column-gap: 1.25rem;
+  display: flex;
+  gap: 1.25rem;
+  /* Columns are independent stacks — they must not stretch to match each other. */
+  align-items: flex-start;
   padding-block: 1.5rem 4rem;
+}
+
+.grid__column {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /* ── Cells ──────────────────────────────────────────────────────────────── */
 
 .grid__cell {
-  /* Keeps a card from being split across a column boundary. */
-  break-inside: avoid;
-  /* Column layout has no row-gap, so the spacing lives on the cell. */
-  margin-bottom: 1.25rem;
   opacity: 0;
   transform: translateY(22px);
   transition:
@@ -164,8 +243,7 @@ export default defineComponent({
 }
 
 .grid__empty {
-  /* Spans the whole area rather than sitting in one column. */
-  column-span: all;
+  flex: 1 1 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -176,20 +254,12 @@ export default defineComponent({
 
 /* ── Breakpoints ────────────────────────────────────────────────────────── */
 
+/* Column *count* is decided in JavaScript, since the masonry fill needs to know
+   it; these only widen the gaps. Keep the breakpoints in step with columnsFor(). */
 @media (min-width: 600px) {
-  .grid {
-    columns: 2;
-    column-gap: 1.5rem;
-  }
-
-  .grid__cell {
-    margin-bottom: 1.5rem;
-  }
-}
-
-@media (min-width: 960px) {
-  .grid {
-    columns: 3;
+  .grid,
+  .grid__column {
+    gap: 1.5rem;
   }
 }
 </style>
