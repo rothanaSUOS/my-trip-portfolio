@@ -66,5 +66,30 @@
         "alt": "IMG 2177"
       }
     ]
+  },
+  {
+    "id": "2028-visit-organic-farm",
+    "title": "Visit Organic Farm at kandal Province",
+    "date": "2028-08-16",
+    "location": {
+      "name": "Kandal",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "university",
+    "template": "collage",
+    "description": "Visit Organic farm with friend and teacher to understand how safe and clean to environment",
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2028-visit-organic-farm-01.jpg",
+        "alt": "IMG 20180523 100001"
+      },
+      {
+        "id": "p2",
+        "url": "photos/2028-visit-organic-farm-02.jpg",
+        "alt": "IMG 20180523 102244"
+      }
+    ]
   }
 ]
