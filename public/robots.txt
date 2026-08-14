@@ -1,0 +1,4 @@
+# Unlisted, not private: anyone with the link can view this site.
+# This only asks search engines not to list it.
+User-agent: *
+Disallow: /

@@ -1,0 +1,199 @@
+[
+  {
+    "id": "2001-kampot-grandparents",
+    "title": "Summers at the Grandparents’ House",
+    "date": "2001-06",
+    "endDate": "2001-08",
+    "location": {
+      "name": "Kampot",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "childhood",
+    "template": "panel",
+    "description": "The first place I remember travelling to. Every school holiday we\ntook the long bus ride south, and the whole trip smelled like durian and diesel.\nDays were spent in the river, evenings on the porch listening to my grandfather\ntell the same three stories.",
+    "highlights": [
+      "First time seeing the sea",
+      "Learning to swim in the river",
+      "Mango season"
+    ],
+    "tags": [
+      "family",
+      "childhood",
+      "countryside"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "https://picsum.photos/seed/kampot1/1600/1200",
+        "alt": "A river at dusk"
+      },
+      {
+        "id": "p2",
+        "url": "https://picsum.photos/seed/kampot2/1600/1200",
+        "alt": "A wooden porch"
+      }
+    ]
+  },
+  {
+    "id": "2007-siem-reap",
+    "title": "School Trip to Angkor",
+    "date": "2007-11-14",
+    "endDate": "2007-11-17",
+    "location": {
+      "name": "Siem Reap",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "school",
+    "template": "window",
+    "description": "Four days, forty classmates and one very patient history teacher.\nWe watched the sun come up over Angkor Wat at 5am, and I understood for the first\ntime that the things in textbooks are real places you can stand inside.",
+    "highlights": [
+      "Sunrise at Angkor Wat",
+      "Ta Prohm",
+      "First disposable camera"
+    ],
+    "tags": [
+      "school",
+      "history",
+      "temples"
+    ],
+    "featured": true,
+    "photos": [
+      {
+        "id": "p1",
+        "url": "https://picsum.photos/seed/angkor1/1600/1200",
+        "alt": "Temple at sunrise"
+      },
+      {
+        "id": "p2",
+        "url": "https://picsum.photos/seed/angkor2/1600/1200",
+        "alt": "Stone corridor"
+      },
+      {
+        "id": "p3",
+        "url": "https://picsum.photos/seed/angkor3/1600/1200",
+        "alt": "Tree roots over stone"
+      }
+    ]
+  },
+  {
+    "id": "2013-bangkok",
+    "title": "First Time Abroad",
+    "date": "2013-04-12",
+    "endDate": "2013-04-20",
+    "location": {
+      "name": "Bangkok",
+      "country": "Thailand",
+      "countryCode": "th"
+    },
+    "chapter": "university",
+    "template": "collage",
+    "description": "My first passport stamp. Eight days of getting lost on purpose,\neating from every cart on the street, and discovering that a city can stay awake\nlonger than I can.",
+    "highlights": [
+      "First passport stamp",
+      "Chatuchak market",
+      "Songkran"
+    ],
+    "tags": [
+      "solo",
+      "city",
+      "food"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "https://picsum.photos/seed/bangkok1/1600/1200",
+        "alt": "Night market"
+      },
+      {
+        "id": "p2",
+        "url": "https://picsum.photos/seed/bangkok2/1600/1200",
+        "alt": "Street food stall"
+      }
+    ]
+  },
+  {
+    "id": "2019-tokyo",
+    "title": "Cherry Blossoms and Vending Machines",
+    "date": "2019-03-28",
+    "endDate": "2019-04-08",
+    "location": {
+      "name": "Tokyo",
+      "country": "Japan",
+      "countryCode": "jp"
+    },
+    "chapter": "work",
+    "template": "frame",
+    "description": "A work conference that turned into eleven days. Hanami in Ueno\nPark, a day trip to Kamakura, and more convenience-store coffee than I would like\nto admit.",
+    "highlights": [
+      "Hanami in Ueno Park",
+      "Kamakura day trip",
+      "Shibuya at 2am"
+    ],
+    "tags": [
+      "work",
+      "city",
+      "spring"
+    ],
+    "featured": true,
+    "photos": [
+      {
+        "id": "p1",
+        "url": "https://picsum.photos/seed/tokyo1/1600/1200",
+        "alt": "Cherry blossoms"
+      },
+      {
+        "id": "p2",
+        "url": "https://picsum.photos/seed/tokyo2/1600/1200",
+        "alt": "Neon-lit street"
+      },
+      {
+        "id": "p3",
+        "url": "https://picsum.photos/seed/tokyo3/1600/1200",
+        "alt": "A quiet shrine"
+      },
+      {
+        "id": "p4",
+        "url": "https://picsum.photos/seed/tokyo4/1600/1200",
+        "alt": "Train platform"
+      }
+    ]
+  },
+  {
+    "id": "2024-koh-rong",
+    "title": "Three Days Without Signal",
+    "date": "2024-12-20",
+    "endDate": "2024-12-23",
+    "location": {
+      "name": "Koh Rong",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "recent",
+    "template": "quote",
+    "description": "Deliberately picked the bungalow with no wifi. Read two books,\nswam every morning, and saw bioluminescent plankton for the first time — the\nwater lit up blue every time I moved.",
+    "highlights": [
+      "Bioluminescent plankton",
+      "No wifi for 3 days",
+      "Sunrise swims"
+    ],
+    "tags": [
+      "beach",
+      "offline",
+      "islands"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "https://picsum.photos/seed/kohrong1/1600/1200",
+        "alt": "An empty beach"
+      },
+      {
+        "id": "p2",
+        "url": "https://picsum.photos/seed/kohrong2/1600/1200",
+        "alt": "Bungalow at dusk"
+      }
+    ]
+  }
+]

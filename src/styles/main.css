@@ -1,0 +1,93 @@
+/*
+ * Global styles. Component-specific rules live in each .vue file's <style scoped>.
+ * Only three things belong here: font assignments, shared type treatments, and
+ * the timeline geometry variables that several components read.
+ */
+
+:root {
+  --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
+
+  /* Timeline geometry. The desktop rail sits at the centre; below 960px
+     TripTimeline overrides --rail-x to pull it to the left edge. */
+  --rail-x: 50%;
+  --rail-width: 2px;
+  --node-size: 14px;
+
+  /* Corner rounding, matching the soft travel-brand look. */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-xl: 36px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+  overflow-y: scroll; /* Reserve the scrollbar so filtering doesn't shift layout. */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Shared type treatments ─────────────────────────────────────────────── */
+
+/* Headings: light weight, tight leading, with a bold span for emphasis —
+   "Qual o seu próximo **destino?**" */
+.font-display {
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+.font-display strong,
+.font-display .em {
+  font-weight: 600;
+}
+
+/* Small uppercase metadata: dates, labels, counts. */
+.font-meta {
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Preserves paragraph breaks produced by formatStory(). */
+.prose {
+  white-space: pre-line;
+  line-height: 1.8;
+  max-width: 62ch;
+}
+
+/* Underlined emphasis inside body copy, as in the reference posters. */
+.underline-accent {
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--v-theme-accent));
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+
+/* ── Focus visibility ───────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid rgb(var(--v-theme-accent));
+  outline-offset: 3px;
+}
