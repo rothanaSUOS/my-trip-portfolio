@@ -38,5 +38,33 @@
         "alt": "IMG 6972"
       }
     ]
+  },
+  {
+    "id": "2018-first-cycling-trip",
+    "title": "First Cycling Trip In Phnom Penh",
+    "date": "2018-05-23",
+    "location": {
+      "name": "Phnom Penh",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "university",
+    "template": "collage",
+    "description": "The first cycling trip in phnom penh to learn how to use map(paper) with my collect friends(PNC-NGO)",
+    "categories": [
+      "friends"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2018-first-cycling-trip-01.jpg",
+        "alt": "IMG 2131"
+      },
+      {
+        "id": "p2",
+        "url": "photos/2018-first-cycling-trip-02.jpg",
+        "alt": "IMG 2177"
+      }
+    ]
   }
 ]
