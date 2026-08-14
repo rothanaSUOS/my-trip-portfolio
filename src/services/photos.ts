@@ -85,10 +85,12 @@ export function resolvePhotoUrl(url: string, size: PhotoSize = 'grid'): string {
   const preview = getPreview(trimmed)
   if (preview) return preview
 
-  const { w, h } = PHOTO_SIZES[size]
+  const { w } = PHOTO_SIZES[size]
 
   if (isGooglePhotoUrl(trimmed)) {
-    return `${trimmed.replace(SIZE_SUFFIX, '')}=w${w}-h${h}-c`
+    // Width only. Asking for `-h{H}-c` made Google crop to our box, which fought
+    // the card rendering the photo at its own shape. CSS does any cropping.
+    return `${trimmed.replace(SIZE_SUFFIX, '')}=w${w}`
   }
 
   if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('data:')) {
@@ -139,16 +141,10 @@ export function resolvePhotoSrcset(url: string, size: PhotoSize = 'grid'): strin
   if (getPreview(url.trim())) return ''
   if (!isGooglePhotoUrl(url)) return ''
 
-  const { w, h } = PHOTO_SIZES[size]
-  const ratio = h / w
+  const { w } = PHOTO_SIZES[size]
   const stripped = url.trim().replace(SIZE_SUFFIX, '')
 
-  return [1, 2]
-    .map((density) => {
-      const width = w * density
-      return `${stripped}=w${width}-h${Math.round(width * ratio)}-c ${density}x`
-    })
-    .join(', ')
+  return [1, 2].map((density) => `${stripped}=w${w * density} ${density}x`).join(', ')
 }
 
 /** Cover photo for a trip, or `undefined` when it has no photos yet. */

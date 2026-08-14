@@ -23,7 +23,11 @@ export default defineComponent({
     photo: { type: Object as PropType<Photo>, required: true },
     /** Which entry of PHOTO_SIZES to request. */
     size: { type: String as PropType<PhotoSize>, default: 'grid' },
-    /** width / height. 0 lets the image size itself (used by the lightbox). */
+    /**
+     * width / height. Pass 0 to use the photo's own shape — the box then takes
+     * its ratio from `photo.width/height` when those are known, so it reserves
+     * the right height before the image loads.
+     */
     aspectRatio: { type: Number, default: 4 / 3 },
     /**
      * Stretch to fill the parent instead of holding an aspect ratio. Card
@@ -59,6 +63,18 @@ export default defineComponent({
      */
     rawSrc(): string {
       return rawPhotoUrl(this.photo.url)
+    },
+
+    /**
+     * The ratio the box should hold, or null to let the image size itself.
+     * An explicit `aspectRatio` wins; otherwise the photo's own shape is used.
+     */
+    boxRatio(): number | null {
+      if (this.fill) return null
+      if (this.aspectRatio) return this.aspectRatio
+
+      const { width, height } = this.photo
+      return width && height ? width / height : null
     },
 
     srcset(): string {
@@ -139,7 +155,7 @@ export default defineComponent({
       'trip-photo--loaded': loaded,
       'trip-photo--fill': fill,
     }"
-    :style="!fill && aspectRatio ? { aspectRatio: String(aspectRatio) } : undefined"
+    :style="boxRatio ? { aspectRatio: String(boxRatio) } : undefined"
   >
     <div v-if="broken" class="trip-photo__fallback font-meta">
       <v-icon icon="$imageOff" size="28" />

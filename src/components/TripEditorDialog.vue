@@ -24,6 +24,9 @@ interface PendingUpload {
   /** Object URL for the local preview, revoked when the row goes away. */
   previewUrl: string
   label: string
+  /** Recorded on the saved photo so cards can reserve the right height. */
+  width: number
+  height: number
 }
 
 /** Shape of the form while editing — same as Trip, but every field editable. */
@@ -395,6 +398,8 @@ export default defineComponent({
           bytes: prepared.bytes,
           previewUrl: URL.createObjectURL(blob),
           label: `${prepared.width}×${prepared.height}, ${formatBytes(prepared.size)}`,
+          width: prepared.width,
+          height: prepared.height,
         }
 
         // The row's URL is set on save, once the trip id is final.
@@ -471,11 +476,17 @@ export default defineComponent({
         const url = row.upload ? photoPath(trip.id, index) : row.photo.url.trim()
         if (row.upload) uploads.push({ path: url, bytes: row.upload.bytes })
 
+        // Dimensions come from a fresh upload, or carry over from the existing
+        // photo when only the text was edited.
+        const width = row.upload?.width ?? row.photo.width
+        const height = row.upload?.height ?? row.photo.height
+
         return {
           id: `p${index + 1}`,
           url,
           alt: row.photo.alt.trim() || draft.title.trim(),
           ...(row.photo.caption?.trim() ? { caption: row.photo.caption.trim() } : {}),
+          ...(width && height ? { width, height } : {}),
         }
       })
 

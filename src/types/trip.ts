@@ -52,6 +52,17 @@ export interface Photo {
   url: string
   /** Required — screen readers and broken-image fallbacks both use this. */
   alt: string
+  /**
+   * Pixel dimensions, recorded at upload.
+   *
+   * Cards render a photo at its own aspect ratio, which the browser only learns
+   * once the image loads — without these the card has zero height until then and
+   * the masonry layout jumps as photos arrive. Knowing the shape up front lets
+   * the box reserve the right space immediately. Optional: photos added by hand
+   * simply reflow.
+   */
+  width?: number
+  height?: number
   /** Optional caption shown under the photo in the lightbox. */
   caption?: string
 }

@@ -15,7 +15,9 @@
       {
         "id": "p1",
         "url": "photos/2008-the-first-trip-01.jpg",
-        "alt": "IMG 6973"
+        "alt": "IMG 6973",
+        "width": 1290,
+        "height": 1720
       }
     ]
   },
@@ -35,7 +37,9 @@
       {
         "id": "p1",
         "url": "photos/2007-wedding-ceremony-as-01.jpg",
-        "alt": "IMG 6972"
+        "alt": "IMG 6972",
+        "width": 720,
+        "height": 960
       }
     ]
   },
@@ -58,12 +62,16 @@
       {
         "id": "p1",
         "url": "photos/2018-first-cycling-trip-01.jpg",
-        "alt": "IMG 2131"
+        "alt": "IMG 2131",
+        "width": 2000,
+        "height": 1333
       },
       {
         "id": "p2",
         "url": "photos/2018-first-cycling-trip-02.jpg",
-        "alt": "IMG 2177"
+        "alt": "IMG 2177",
+        "width": 2000,
+        "height": 1333
       }
     ]
   },
@@ -83,12 +91,16 @@
       {
         "id": "p1",
         "url": "photos/2028-visit-organic-farm-01.jpg",
-        "alt": "IMG 20180523 100001"
+        "alt": "IMG 20180523 100001",
+        "width": 2000,
+        "height": 1500
       },
       {
         "id": "p2",
         "url": "photos/2028-visit-organic-farm-02.jpg",
-        "alt": "IMG 20180523 102244"
+        "alt": "IMG 20180523 102244",
+        "width": 2000,
+        "height": 1500
       }
     ]
   }

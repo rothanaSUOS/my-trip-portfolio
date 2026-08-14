@@ -30,7 +30,7 @@ export default defineComponent({
 <template>
   <div class="panel">
     <div v-if="view.cover" class="panel__media">
-      <TripPhoto :photo="view.cover" size="thumb" :eager="eager" :aspect-ratio="4 / 3" />
+      <TripPhoto :photo="view.cover" size="thumb" :eager="eager" :aspect-ratio="0" />
       <span v-if="view.photoCount > 1" class="panel__count font-meta">
         <v-icon icon="$imageMultiple" size="13" />
         {{ view.photoCount }}
@@ -73,8 +73,8 @@ export default defineComponent({
 .panel__media {
   position: relative;
   display: flex;
-  /* Fixed 4:3, not flex: 1 — letting the media absorb the card's spare height
-     stretched it to a 0.57 ratio and squeezed landscape photos into strips. */
+  /* The photo keeps its own shape — masonry absorbs the varying heights. A
+     fixed box cropped portrait photos through the middle. */
   flex: 0 0 auto;
   padding: 0.75rem 0.75rem 0;
 }

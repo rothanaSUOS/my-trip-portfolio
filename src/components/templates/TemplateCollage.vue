@@ -30,13 +30,35 @@ export default defineComponent({
     hasPair(): boolean {
       return Boolean(this.view.cover && this.view.second)
     },
+
+    /**
+     * Stack the pair instead of splitting them side by side when both are
+     * landscape, which is what Facebook does.
+     *
+     * Two landscape photos in side-by-side tiles end up in ~0.65 boxes and lose
+     * most of their width; stacked, each tile is roughly 4:3 and barely crops.
+     * A portrait pair is the other way round, so it stays side by side.
+     *
+     * Needs the recorded dimensions — without them the orientation is unknown
+     * until the image loads, so it falls back to side by side.
+     */
+    stacked(): boolean {
+      if (!this.hasPair) return false
+
+      return this.trip.photos
+        .slice(0, 2)
+        .every((photo) => Boolean(photo.width && photo.height) && photo.width! / photo.height! > 1.2)
+    },
   },
 })
 </script>
 
 <template>
   <div class="collage">
-    <div class="collage__media" :class="{ 'collage__media--single': !hasPair }">
+    <div
+      class="collage__media"
+      :class="{ 'collage__media--single': !hasPair, 'collage__media--stacked': stacked }"
+    >
       <TripPhoto
         v-if="view.cover"
         :photo="view.cover"
@@ -100,14 +122,25 @@ export default defineComponent({
   grid-template-columns: 1fr;
 }
 
+/* A landscape pair, stacked. 2:3 overall makes each of the two rows ~4:3. */
+.collage__media--stacked {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  aspect-ratio: 2 / 3;
+}
+
 .collage__media :deep(.trip-photo) {
   border-radius: var(--radius-md);
 }
 
-/* Offset the second photo downward so the pair reads as a collage rather than
-   a two-column grid. */
+/* Offset the second photo downward so a side-by-side pair reads as a collage
+   rather than a two-column grid. Stacked pairs sit flush. */
 .collage__b {
   margin-top: 1.75rem;
+}
+
+.collage__media--stacked .collage__b {
+  margin-top: 0;
 }
 
 .collage__body {

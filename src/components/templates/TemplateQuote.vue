@@ -34,7 +34,7 @@ export default defineComponent({
       :photo="view.cover"
       size="thumb"
       :eager="eager"
-      :aspect-ratio="1"
+      :aspect-ratio="0"
       :rounded="false"
       class="quote__photo"
     />

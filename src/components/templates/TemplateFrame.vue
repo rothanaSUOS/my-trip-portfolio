@@ -35,7 +35,7 @@ export default defineComponent({
         :photo="view.cover"
         size="thumb"
         :eager="eager"
-        fill
+        :aspect-ratio="0"
       />
     </div>
 
@@ -73,11 +73,8 @@ export default defineComponent({
 /* The white "device" mount the photo sits in. */
 .frame__mount {
   display: flex;
-  /* Same 4:3 as every other template. Stretching turned landscape photos into
-     strips; a square mount fixed that but left this the tallest card, and with
-     uniform row heights that padded every other card with dead space. */
+  /* No fixed ratio — the mounted photo keeps its own shape. */
   flex: 0 0 auto;
-  aspect-ratio: 4 / 3;
   background: #fff;
   border-radius: var(--radius-md);
   padding: 0.55rem;
@@ -85,6 +82,7 @@ export default defineComponent({
 
 .frame__mount :deep(.trip-photo) {
   flex: 1 1 auto;
+  min-width: 0;
   border-radius: var(--radius-sm);
 }
 
