@@ -15,17 +15,22 @@
       {
         "id": "p1",
         "url": "photos/2026-cjaoda-01.jpg",
-        "alt": "Screenshot 2026 08 13 at 3.31.11 PM"
+        "alt": "Screenshot 2026 08 13 at 3.30.55 PM"
       },
       {
         "id": "p2",
         "url": "photos/2026-cjaoda-02.jpg",
-        "alt": "Screenshot 2026 08 13 at 5.05.14 PM"
+        "alt": "Screenshot 2026 08 13 at 5.55.11 PM"
       },
       {
         "id": "p3",
-        "url": "photos/2026-cjaoda-03.jpg",
-        "alt": "Screenshot 2026 08 13 at 5.55.11 PM"
+        "url": "https://photos.app.goo.gl/fzThU32bUXVZ7QxKA",
+        "alt": "10 days in japan"
+      },
+      {
+        "id": "p4",
+        "url": "https://photos.fife.usercontent.google.com/pw/AP1GczMFuEa2wE9UOBj1YPqq1jxIB8Iie1MtIEdhXLswhbvjFqs0ImdirQvnjA=w1444-h1924-s-no-gm?authuser=1",
+        "alt": "10 days in japan"
       }
     ]
   }
