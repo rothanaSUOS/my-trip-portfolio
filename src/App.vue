@@ -338,8 +338,7 @@ export default defineComponent({
           </h1>
 
           <p class="hero__lede">
-            Every journey I remember, from childhood holidays to last month — with the photos,
-            the dates and the places attached.
+            Every journey I remember, from childhood holidays to last — With this memory log, I can see the world through the lens of my own life. Each trip is a story, each photo a memory, and together they form a tapestry of experiences that define who I am.
           </p>
 
           <div class="hero__actions">
@@ -452,7 +451,7 @@ export default defineComponent({
       </div>
 
       <footer class="site-footer">
-        <span class="font-meta">Made with Vue 3 · Vuetify</span>
+        <span class="font-meta">May My Travel Never End © {{ new Date().getFullYear() }}</span>
       </footer>
     </v-main>
 

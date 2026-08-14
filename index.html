@@ -13,7 +13,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Wanderlog" />
+    <!-- Browser tab icon. -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
+
+    <!-- Home-screen icons. %BASE_URL% is replaced by Vite at build time with the
+         deploy path (/my-trip-portfolio/), so these resolve on GitHub Pages —
+         a root-absolute "/apple-touch-icon.png" would 404 under a subpath. -->
+    <link rel="apple-touch-icon" sizes="180x180" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
 
     <title>Wanderlog — A Life in Trips</title>
     <meta
