@@ -33,5 +33,25 @@
         "alt": "10 days in japan"
       }
     ]
+  },
+  {
+    "id": "2008-the-first-trip",
+    "title": "The first trip in my life that I remember and have footage",
+    "date": "2008-04-14",
+    "location": {
+      "name": "Kep",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "childhood",
+    "template": "frame",
+    "description": "The first time in my life I that I see the sea and play the sugar crab in the sand",
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2008-the-first-trip-01.jpg",
+        "alt": "IMG 6973"
+      }
+    ]
   }
 ]
