@@ -207,5 +207,41 @@
         "height": 1500
       }
     ]
+  },
+  {
+    "id": "2026-fresh-air-at",
+    "title": "Fresh air at Samrong lake",
+    "date": "2026-08-16",
+    "location": {
+      "name": "Phnom Penh",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "recent",
+    "template": "mosaic",
+    "description": "The enviroment, view very nice but the price it abit expensive. Anyway just go to drink a coffee it fine",
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2026-fresh-air-at-01.jpg",
+        "alt": "IMG 6988",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p2",
+        "url": "photos/2026-fresh-air-at-02.jpg",
+        "alt": "IMG 6989",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p3",
+        "url": "photos/2026-fresh-air-at-03.jpg",
+        "alt": "IMG 6991",
+        "width": 1500,
+        "height": 2000
+      }
+    ]
   }
 ]
