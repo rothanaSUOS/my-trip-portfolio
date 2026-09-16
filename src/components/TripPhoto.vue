@@ -35,6 +35,12 @@ export default defineComponent({
      * the photo absorbs whatever space the text does not use.
      */
     fill: { type: Boolean, default: false },
+    /**
+     * Hug the whole photograph instead of cropping it into a box — the detail
+     * hero and the lightbox, where the point is to see the entire image. The
+     * caller caps the result with `max-height` on `.trip-photo__img`.
+     */
+    contain: { type: Boolean, default: false },
     /** First-screen images should load eagerly; everything else lazily. */
     eager: { type: Boolean, default: false },
     rounded: { type: Boolean, default: true },
@@ -70,6 +76,10 @@ export default defineComponent({
      * An explicit `aspectRatio` wins; otherwise the photo's own shape is used.
      */
     boxRatio(): number | null {
+      // A contain box takes its shape from the image. Imposing a ratio on a box
+      // that is itself sized by that image is what collapses it — see
+      // `.trip-photo--contain`.
+      if (this.contain) return null
       if (this.fill) return null
       if (this.aspectRatio) return this.aspectRatio
 
@@ -154,6 +164,7 @@ export default defineComponent({
       'trip-photo--rounded': rounded,
       'trip-photo--loaded': loaded,
       'trip-photo--fill': fill,
+      'trip-photo--contain': contain,
     }"
     :style="boxRatio ? { aspectRatio: String(boxRatio) } : undefined"
   >
@@ -193,6 +204,23 @@ export default defineComponent({
 .trip-photo--fill {
   height: 100%;
   min-height: 0;
+}
+
+/* The opposite: the box hugs the photo instead of the photo filling the box.
+   No ratio and no percentage height on the image, because both would have to
+   resolve against a parent that is itself sized by that image. WebKit resolves
+   that circle to 0 and the photo vanishes; Blink resolves it to auto and the
+   photo overflows whatever was meant to contain it. The caller sets the cap as
+   a max-height on .trip-photo__img. */
+.trip-photo--contain {
+  width: auto;
+}
+
+.trip-photo--contain .trip-photo__img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .trip-photo__img {

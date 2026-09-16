@@ -302,6 +302,15 @@ setup: repo **Settings → Pages → Source → GitHub Actions**.
 - **Testing the GitHub path.** Real commits need a real token. Stub
   `window.fetch` for `api.github.com` and drive the UI — that verifies request
   order, shas and payloads, which is the part this repo actually owns.
+- **A `TripPhoto` that hugs its photo needs `contain`.** `.trip-photo__img` is
+  `height: 100%`, which is right when the box has a size of its own (`fill`, or
+  an `aspect-ratio`) and circular when the box is sized *by the image*. Safari
+  resolves that circle to `0` — the photo and anything the box clips, such as
+  the detail dialog's close button, disappear entirely — and Chrome resolves it
+  to `auto`, overflowing whatever was meant to contain it. Pass `contain` and
+  cap it with a `max-height` on `.trip-photo__img`; never hand-roll it with
+  `width: auto` plus `:deep()` overrides.
+
 - **`this.$refs` inside nested `v-for`.** It does not reliably collect every
   element across both loop levels. `TripGrid` queries the DOM for
   `[data-trip-id]` instead.

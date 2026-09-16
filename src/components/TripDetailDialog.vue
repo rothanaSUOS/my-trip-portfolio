@@ -109,7 +109,7 @@ export default defineComponent({
           v-if="hero"
           :photo="hero"
           size="grid"
-          :aspect-ratio="0"
+          contain
           :rounded="false"
           eager
           class="detail__hero-photo"
@@ -221,23 +221,19 @@ export default defineComponent({
   opacity: 0.55;
 }
 
+/* `contain` on the component shrinks the box to fit the photo, so the backdrop
+   shows beside a portrait one rather than the photo stretching across it. */
 .detail__hero-photo {
   position: relative;
   cursor: zoom-in;
-  max-height: 58vh;
-  /* Shrink-to-fit so the backdrop shows beside a portrait photo rather than
-     the photo stretching across it. */
-  width: auto;
-  max-width: 100%;
 }
 
-/* contain, not cover: the point of the detail view is the whole photograph.
-   A fixed 16:9 crop cut roughly a third off a 1.15-ratio phone photo. */
+/* The cap goes on the image, not the box: the box takes its height from the
+   image, so a percentage height here would have nothing to resolve against.
+   Capping at all because the point of the detail view is the whole photograph —
+   a fixed 16:9 crop cut roughly a third off a 1.15-ratio phone photo. */
 .detail__hero-photo :deep(.trip-photo__img) {
-  width: auto;
-  max-width: 100%;
   max-height: 58vh;
-  object-fit: contain;
 }
 
 .detail__hero-tools {
@@ -331,7 +327,6 @@ export default defineComponent({
 @media (max-width: 599px) {
   /* Less vertical room on a phone, and the title needs to stay above the fold. */
   .detail__hero,
-  .detail__hero-photo,
   .detail__hero-photo :deep(.trip-photo__img) {
     max-height: 42vh;
   }

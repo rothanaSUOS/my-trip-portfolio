@@ -137,7 +137,7 @@ export default defineComponent({
           :key="current.id"
           :photo="current"
           size="full"
-          :aspect-ratio="0"
+          contain
           :rounded="false"
           eager
           class="lightbox__photo"
@@ -210,17 +210,28 @@ export default defineComponent({
   padding: 0 1rem;
 }
 
+/* `contain` on the component sizes the box to the photo; the explicit height
+   gives the image's max-height below something definite to resolve against, so
+   a tall photo is contained in the stage rather than spilling out of it.
+   That leaves transparent box either side of the photo, which would otherwise
+   eat the taps the stage turns into a dismiss — so the box ignores pointers and
+   the image takes them back. The image, not the box, because a `none` here
+   would also swallow the touchstart/touchend that drive swipe navigation. */
 .lightbox__photo {
-  width: auto;
+  height: 100%;
   max-width: min(100%, 1600px);
   background: transparent;
+  pointer-events: none;
+  /* The box is now stage-height, so it centres the photo itself rather than
+     letting the stage do it. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox__photo :deep(.trip-photo__img) {
-  width: auto;
-  max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  pointer-events: auto;
 }
 
 .lightbox__footer {
