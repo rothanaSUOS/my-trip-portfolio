@@ -155,6 +155,14 @@ export default defineComponent({
   },
 
   methods: {
+    /**
+     * Stat labels that read "1 Country" but "6 Countries". Both forms are
+     * passed in because Country/Countries is not a plain `+ s`.
+     */
+    plural(count: number, one: string, many: string): string {
+      return count === 1 ? one : many
+    },
+
     /** Re-read the deployed data. Called on load and after every commit. */
     async refresh() {
       this.loadError = ''
@@ -377,19 +385,19 @@ export default defineComponent({
           <dl class="hero__stats">
             <div class="hero__stat">
               <dd class="font-display">{{ stats.tripCount }}</dd>
-              <dt class="font-meta">Trips</dt>
+              <dt class="font-meta">{{ plural(stats.tripCount, 'Trip', 'Trips') }}</dt>
             </div>
             <div class="hero__stat">
               <dd class="font-display">{{ stats.countryCount }}</dd>
-              <dt class="font-meta">Countries</dt>
+              <dt class="font-meta">{{ plural(stats.countryCount, 'Country', 'Countries') }}</dt>
             </div>
             <div class="hero__stat">
               <dd class="font-display">{{ stats.photoCount }}</dd>
-              <dt class="font-meta">Photos</dt>
+              <dt class="font-meta">{{ plural(stats.photoCount, 'Photo', 'Photos') }}</dt>
             </div>
             <div class="hero__stat">
               <dd class="font-display">{{ stats.yearSpan }}</dd>
-              <dt class="font-meta">Years</dt>
+              <dt class="font-meta">{{ plural(stats.yearSpan, 'Year', 'Years') }}</dt>
             </div>
           </dl>
         </div>
