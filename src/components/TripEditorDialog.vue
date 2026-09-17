@@ -6,6 +6,7 @@ import TripPhoto from '@/components/TripPhoto.vue'
 import { CATEGORIES } from '@/data/categories'
 import { CHAPTERS } from '@/data/chapters'
 import { DEFAULT_TEMPLATE } from '@/data/templates'
+import { readPhotoDate } from '@/services/exif'
 import { formatBytes, photoPath, prepareImage, ImageError } from '@/services/images'
 import { isGooglePhotosAlbumLink, isSessionBoundPhotoUrl } from '@/services/photos'
 import { isIdTaken } from '@/services/tripStore'
@@ -130,6 +131,11 @@ export default defineComponent({
       uploads: [] as (PendingUpload | null)[],
       uploadError: '',
       preparing: false,
+      /**
+       * True while the dates on screen came from photo EXIF rather than the
+       * user, so the hint can say so. Cleared as soon as they pick a date.
+       */
+      datesFromPhotos: false,
     }
   },
 
@@ -147,6 +153,7 @@ export default defineComponent({
         return toDateObject(this.draft.date)
       },
       set(value: Date | null) {
+        this.datesFromPhotos = false
         this.draft.date = fromDateObject(value, this.datePrecision)
       },
     },
@@ -156,12 +163,14 @@ export default defineComponent({
         return toDateObject(this.draft.endDate)
       },
       set(value: Date | null) {
+        this.datesFromPhotos = false
         this.draft.endDate = fromDateObject(value, this.datePrecision)
       },
     },
 
     /** Hint under the date row, so the stored value is never a surprise. */
     precisionHint(): string {
+      if (this.datesFromPhotos) return 'Taken from your photos — change it if it is wrong.'
       if (this.datePrecision === 'year') return 'Stored as the year alone, e.g. 2001.'
       if (this.datePrecision === 'month') return 'Stored as year and month, e.g. 2004-07.'
       return 'Stored as a full date, e.g. 2019-03-28.'
@@ -295,6 +304,7 @@ export default defineComponent({
       this.submitted = false
       this.idTouched = this.trip !== null
       this.uploadError = ''
+      this.datesFromPhotos = false
       this.clearUploads()
 
       if (!this.trip) {
@@ -376,10 +386,7 @@ export default defineComponent({
       this.uploads.splice(target, 0, upload ?? null)
     },
 
-    /**
-     * Decode, downscale and stage a chosen file. Nothing is uploaded yet — the
-     * bytes ride along with `save` so cancelling the form commits nothing.
-     */
+    /** Replace one row's image with a single chosen file. */
     async onFilePicked(index: number, files: File[] | File | null) {
       const file = Array.isArray(files) ? files[0] : files
       if (!file) return
@@ -388,32 +395,117 @@ export default defineComponent({
       this.preparing = true
 
       try {
-        const prepared = await prepareImage(file)
-
-        const previous = this.uploads[index]
-        if (previous) URL.revokeObjectURL(previous.previewUrl)
-
-        const blob = new Blob([prepared.bytes as unknown as BlobPart], { type: 'image/jpeg' })
-        this.uploads[index] = {
-          bytes: prepared.bytes,
-          previewUrl: URL.createObjectURL(blob),
-          label: `${prepared.width}×${prepared.height}, ${formatBytes(prepared.size)}`,
-          width: prepared.width,
-          height: prepared.height,
-        }
-
-        // The row's URL is set on save, once the trip id is final.
-        const photo = this.draft.photos[index]
-        if (photo) {
-          photo.url = ''
-          if (!photo.alt.trim()) photo.alt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ')
-        }
+        const date = await this.stageFile(index, file)
+        this.prefillDates(date ? [date] : [])
       } catch (error) {
-        this.uploadError =
-          error instanceof ImageError ? error.message : `Could not read ${file.name}.`
+        this.uploadError = this.describeUploadError(file, error)
       } finally {
         this.preparing = false
       }
+    },
+
+    /**
+     * Stage several files at once: each fills the next empty row, then new rows
+     * are added for the rest. Files are processed one at a time — decoding a
+     * dozen 12MB photos in parallel can exhaust memory on a phone.
+     *
+     * A file that fails is skipped and reported; the others still go through.
+     */
+    async onFilesPicked(files: File[] | File | null) {
+      const list = Array.isArray(files) ? files : files ? [files] : []
+      if (!list.length) return
+
+      this.uploadError = ''
+      this.preparing = true
+
+      const dates: string[] = []
+      const failures: string[] = []
+
+      try {
+        for (const file of list) {
+          let index = this.draft.photos.findIndex((_, i) => !this.hasContent(i))
+          if (index === -1) {
+            this.addPhoto()
+            index = this.draft.photos.length - 1
+          }
+
+          try {
+            const date = await this.stageFile(index, file)
+            if (date) dates.push(date)
+          } catch (error) {
+            failures.push(this.describeUploadError(file, error))
+          }
+        }
+      } finally {
+        this.preparing = false
+      }
+
+      this.prefillDates(dates)
+      this.uploadError = failures.join(' ')
+    },
+
+    /**
+     * Decode, downscale and stage a chosen file into row `index`. Nothing is
+     * uploaded yet — the bytes ride along with `save` so cancelling the form
+     * commits nothing. Resolves to the date the photo was taken, if known.
+     */
+    async stageFile(index: number, file: File): Promise<string | null> {
+      const [prepared, date] = await Promise.all([prepareImage(file), readPhotoDate(file)])
+
+      const previous = this.uploads[index]
+      if (previous) URL.revokeObjectURL(previous.previewUrl)
+
+      const blob = new Blob([prepared.bytes as unknown as BlobPart], { type: 'image/jpeg' })
+      this.uploads[index] = {
+        bytes: prepared.bytes,
+        previewUrl: URL.createObjectURL(blob),
+        label: `${prepared.width}×${prepared.height}, ${formatBytes(prepared.size)}`,
+        width: prepared.width,
+        height: prepared.height,
+      }
+
+      // The row's URL is set on save, once the trip id is final.
+      const photo = this.draft.photos[index]
+      if (photo) {
+        photo.url = ''
+        if (!photo.alt.trim()) photo.alt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ')
+      }
+
+      return date
+    },
+
+    /**
+     * Fill empty date fields from the photos' capture dates: the earliest
+     * becomes the start, the latest the end when it is a different day. Never
+     * overwrites a date the user has already set.
+     */
+    prefillDates(dates: string[]) {
+      if (!dates.length) return
+
+      const sorted = [...dates].sort()
+      const first = sorted[0]
+      const last = sorted[sorted.length - 1]
+      if (!first || !last) return
+
+      let filled = false
+
+      if (!this.draft.date.trim()) {
+        this.draft.date = withPrecision(first, this.datePrecision)
+        filled = true
+      }
+
+      const start = this.draft.date.trim()
+      const end = withPrecision(last, this.datePrecision)
+      if (!this.draft.endDate.trim() && end > start) {
+        this.draft.endDate = end
+        filled = true
+      }
+
+      if (filled) this.datesFromPhotos = true
+    },
+
+    describeUploadError(file: File, error: unknown): string {
+      return error instanceof ImageError ? error.message : `Could not read ${file.name}.`
     },
 
     /** Local preview for a staged upload, or the row's own URL. */
@@ -751,14 +843,33 @@ export default defineComponent({
           </div>
         </div>
 
-        <v-btn
-          prepend-icon="$plus"
-          variant="tonal"
-          class="editor__add-photo"
-          @click="addPhoto"
-        >
-          Add a photo
-        </v-btn>
+        <div class="editor__photo-actions">
+          <v-file-input
+            :model-value="[]"
+            label="Upload several photos"
+            density="compact"
+            variant="outlined"
+            rounded="lg"
+            accept="image/*"
+            multiple
+            prepend-icon=""
+            prepend-inner-icon="$imageMultiple"
+            hint="Empty dates are filled in from when the photos were taken."
+            persistent-hint
+            :loading="preparing"
+            :disabled="preparing"
+            class="editor__bulk-upload"
+            @update:model-value="onFilesPicked"
+          />
+          <v-btn
+            prepend-icon="$plus"
+            variant="tonal"
+            class="editor__add-photo"
+            @click="addPhoto"
+          >
+            Add a photo
+          </v-btn>
+        </div>
 
         <!-- ── Id ───────────────────────────────────────────────────── -->
         <h3 class="font-meta editor__section">Advanced</h3>
@@ -884,7 +995,19 @@ export default defineComponent({
   color: rgb(var(--v-theme-on-surface-variant));
 }
 
+.editor__photo-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.editor__bulk-upload {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .editor__add-photo {
+  flex: 0 0 auto;
   align-self: flex-start;
 }
 
@@ -982,6 +1105,11 @@ export default defineComponent({
 
   .photo-row__thumb {
     flex-basis: 56px;
+  }
+
+  .editor__photo-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 </style>
