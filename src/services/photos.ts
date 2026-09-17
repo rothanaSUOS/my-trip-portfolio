@@ -68,11 +68,19 @@ export function isGooglePhotosAlbumLink(url: string): boolean {
 }
 
 /**
+ * A URL that is already complete: web links, inline `data:` images, and the
+ * `blob:` object URLs the editor uses to preview a file before it is uploaded.
+ */
+function isAbsoluteUrl(url: string): boolean {
+  return /^(https?:\/\/|data:|blob:)/i.test(url)
+}
+
+/**
  * Resolve a stored photo URL into an `<img src>` at the requested size.
  *
  * - Google CDN links get a `=w{W}-h{H}-c` suffix so Google serves a correctly
  *   sized, cropped JPEG rather than the full-resolution original.
- * - Absolute non-Google URLs pass through untouched.
+ * - Absolute non-Google URLs (including `data:` and `blob:`) pass through untouched.
  * - Everything else is treated as a path inside `public/` and gets the Vite base
  *   prefix, so it still resolves when hosted at `/my-trip-portfolio/`.
  */
@@ -93,9 +101,7 @@ export function resolvePhotoUrl(url: string, size: PhotoSize = 'grid'): string {
     return `${trimmed.replace(SIZE_SUFFIX, '')}=w${w}`
   }
 
-  if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('data:')) {
-    return trimmed
-  }
+  if (isAbsoluteUrl(trimmed)) return trimmed
 
   // Repo-relative path under public/ — join with the deploy base path.
   const base = import.meta.env.BASE_URL || '/'
@@ -117,7 +123,7 @@ export function resolvePhotoUrl(url: string, size: PhotoSize = 'grid'): string {
  */
 export function rawPhotoUrl(url: string): string {
   const trimmed = url.trim()
-  if (!trimmed || /^https?:\/\//i.test(trimmed) || trimmed.startsWith('data:')) return ''
+  if (!trimmed || isAbsoluteUrl(trimmed)) return ''
 
   const config = loadConfig()
   const owner = config?.owner || guessRepoFromLocation().owner
