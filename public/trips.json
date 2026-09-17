@@ -243,5 +243,44 @@
         "height": 2000
       }
     ]
+  },
+  {
+    "id": "2026-bork-kor-with",
+    "title": "Bork kor with friends",
+    "date": "2026-06-14",
+    "location": {
+      "name": "Kampot",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "recent",
+    "template": "mosaic",
+    "description": "We spend a night at …",
+    "categories": [
+      "friends"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2026-bork-kor-with-01.jpg",
+        "alt": "IMG 6283",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p2",
+        "url": "photos/2026-bork-kor-with-02.jpg",
+        "alt": "IMG 6289",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p3",
+        "url": "photos/2026-bork-kor-with-03.jpg",
+        "alt": "IMG 6290",
+        "width": 1500,
+        "height": 2000
+      }
+    ]
   }
 ]
