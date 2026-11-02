@@ -302,31 +302,52 @@
     "photos": [
       {
         "id": "p1",
-        "url": "photos/2026-pre-wedding-friends-01.jpg",
-        "alt": "IMG 7514",
-        "width": 1500,
-        "height": 2000
-      },
-      {
-        "id": "p2",
-        "url": "photos/2026-pre-wedding-friends-02.jpg",
-        "alt": "IMG 7499",
-        "width": 1500,
-        "height": 2000
-      },
-      {
-        "id": "p3",
         "url": "photos/2026-pre-wedding-friends-03.jpg",
         "alt": "IMG 7421",
         "width": 1500,
         "height": 2000
       },
       {
-        "id": "p4",
+        "id": "p2",
         "url": "photos/2026-pre-wedding-friends-04.jpg",
         "alt": "IMG 7356",
         "width": 1500,
         "height": 2000
+      },
+      {
+        "id": "p3",
+        "url": "photos/2026-pre-wedding-friends-03.jpg",
+        "alt": "IMG 7514",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p4",
+        "url": "photos/2026-pre-wedding-friends-04.jpg",
+        "alt": "IMG 7500",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p5",
+        "url": "photos/2026-pre-wedding-friends-05.jpg",
+        "alt": "IMG 7554",
+        "width": 960,
+        "height": 1280
+      },
+      {
+        "id": "p6",
+        "url": "photos/2026-pre-wedding-friends-06.jpg",
+        "alt": "IMG 7553",
+        "width": 960,
+        "height": 1280
+      },
+      {
+        "id": "p7",
+        "url": "photos/2026-pre-wedding-friends-07.jpg",
+        "alt": "IMG 7552",
+        "width": 960,
+        "height": 1280
       }
     ]
   }
