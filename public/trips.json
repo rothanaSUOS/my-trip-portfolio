@@ -282,5 +282,52 @@
         "height": 2000
       }
     ]
+  },
+  {
+    "id": "2026-pre-wedding-friends",
+    "title": "Pre-wedding friends at Angkor wat",
+    "date": "2026-10-30",
+    "endDate": "2026-11-01",
+    "location": {
+      "name": "សៀមរាប",
+      "country": "Cambodia",
+      "countryCode": "kh"
+    },
+    "chapter": "recent",
+    "template": "mosaic",
+    "description": "The first experaince of sleeping night bus it horrorable but the trip really fun with friends",
+    "categories": [
+      "friends"
+    ],
+    "photos": [
+      {
+        "id": "p1",
+        "url": "photos/2026-pre-wedding-friends-01.jpg",
+        "alt": "IMG 7514",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p2",
+        "url": "photos/2026-pre-wedding-friends-02.jpg",
+        "alt": "IMG 7499",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p3",
+        "url": "photos/2026-pre-wedding-friends-03.jpg",
+        "alt": "IMG 7421",
+        "width": 1500,
+        "height": 2000
+      },
+      {
+        "id": "p4",
+        "url": "photos/2026-pre-wedding-friends-04.jpg",
+        "alt": "IMG 7356",
+        "width": 1500,
+        "height": 2000
+      }
+    ]
   }
 ]
